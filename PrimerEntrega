@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[]) {
+	
+FILE * f = fopen("tp.txt", "r+b");
+if( f == NULL){
+	perror("Error en la apertura del archivo");
+	return 1;
+}
+	int contador=0;
+	char caracter;
+	while (feof(f) == 0){
+		caracter = fgetc(f);
+			if(caracter==','||caracter=='?'||caracter=='.'||caracter==':'||caracter==';'||caracter=='¿'||caracter=='¡'||caracter=='!'||caracter=='='||caracter=='\''||caracter=='\"'){
+			contador++;
+			}
+			if(caracter==' '){
+			caracter = fgetc(f);
+			if(caracter==' '){
+				contador++;
+			} else{
+				contador++;
+			}
+		}
+	}
+	if(contador==0){
+		printf("el archivo esta vacio");
+		return 1;
+	}
+	fclose(f);
+	printf("cantidad de palabras del archivo: %i.",contador+1);
+	
+	return 0;
+}
