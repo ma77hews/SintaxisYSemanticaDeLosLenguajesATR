@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void transcribirCaracter(char caracter,FILE * f,FILE * g){
+	char aux;		
+	switch(caracter){		
+		case '/':		//en caso que sea barra '/' debo verificar si se trata de comentario o no
+			aux=caracter;	//Si no se trata de un comentario cuando avanzo el caracter ,perderia la '/', con aux lo recupero
+			caracter=fgetc(f);
+			switch (caracter){ 			
+				case '*':		
+					while(feof(f)==0){	//avanzo hasta encontrarme con '*/'
+							caracter=fgetc(f);
+							if(caracter=='*'){
+							caracter=fgetc(f);
+							if(caracter=='/'){
+								caracter=fgetc(f);
+								break;		//salgo de la funcion sin transcribir nada
+							}
+					 }
+					}
+					break;
+				case '/':		//caso que se trate de  '//' avanzo el archivo hasta un salto de linea
+						while(caracter != '\n'){
+							caracter=fgetc(f);
+							if(feof(f)!=0){		//debo tener en cuenta el caso de que se termine el archivo
+								break;
+							}
+						}
+					
+						break;
+				default:
+					fputc(aux,g);
+					fputc(caracter,g); 
+			}
+			break;
+		default: 		//En casos normales transcribo el caracter
+			fputc(caracter,g);
+		}
+}
+
+int main(int argc, char *argv[]) {
+	FILE * f=fopen("lectura.txt","r+b");	//abro archivos
+	FILE * g=fopen("escritura.txt","w+b");
+	char caracter;
+	caracter= fgetc(f);			//leo el primero		
+	while(feof(f)==0){	
+		transcribirCaracter(caracter,f,g); //invoco funcion que analiza y transcribe
+		caracter= fgetc(f);	//avanzo el archivo
+	}
+	fclose(f);
+	fclose(g);
+	return 0;
+}
